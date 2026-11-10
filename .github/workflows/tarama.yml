@@ -1,0 +1,24 @@
+name: tarama
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Test modu (1 yaz: her hareket icin uyari gonderir)"
+        default: "0"
+jobs:
+  tara:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ccxt requests
+      - run: python tarama.py
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TEST: ${{ inputs.test || '0' }}
